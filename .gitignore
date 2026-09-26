@@ -1,5 +1,6 @@
 cloudflared.exe
 server.ps1
+*.bat
 .system_generated/
 *.log
 scratch/

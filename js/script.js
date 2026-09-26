@@ -386,6 +386,7 @@ document.head.appendChild(styleSheet);
 const PROJECTS_DATA = {
   guiospro: {
     title: 'GUIOSPRO FLOSS Web — Ficha Técnica',
+    image: 'images/guiospro.jpg',
     category: 'Desarrollo Web Full-Stack & Evaluación Tecnológica',
     problem: 'Las organizaciones enfrentan dificultades metodológicas al decidir entre soluciones de software libre y privativo, incurriendo en costos ocultos y adopciones fallidas.',
     solution: 'GUIOSPRO proporciona un marco estructurado que calcula índices de madurez mediante encuestas ponderadas, análisis FODA automático y gráficos comparativos de sostenibilidad.',
@@ -400,6 +401,7 @@ const PROJECTS_DATA = {
   },
   eduorden: {
     title: 'EduOrden IA — Ficha Técnica',
+    image: 'images/eduorden.jpg',
     category: 'IoT, Sistemas Embebidos & Visión por Computadora',
     problem: 'Niños con discapacidades cognitivas o trastorno del espectro autista presentan dificultades para mantener el orden de sus útiles escolares, requiriendo asistencia constante.',
     solution: 'Maqueta mecatrónica de casilleros inteligentes guiada por una cámara ESP32-CAM y algoritmos de visión por computadora que reconocen objetos escolares e iluminan el casillero correspondiente.',
@@ -414,6 +416,7 @@ const PROJECTS_DATA = {
   },
   gymfitness: {
     title: 'GymFitness Biomecánica — Ficha Técnica',
+    image: 'images/gymfitness.jpg',
     category: 'Inteligencia Artificial & Visión Computacional',
     problem: 'El entrenamiento de fuerza sin supervisión técnica presencial ocasiona sobrecargas biomecánicas erróneas y lesiones agudas o crónicas en espalda y rodillas.',
     solution: 'Aplicación inteligente que realiza captura de video en vivo, detecta 33 puntos anatómicos clave con MediaPipe Pose, evalúa rangos articulares y valida la postura en tiempo real.',
@@ -443,6 +446,11 @@ function initProjectModal() {
 
     modalTitle.textContent = data.title;
     modalBody.innerHTML = `
+      ${data.image ? `
+      <div class="modal-media-header" style="margin-bottom: 1.25rem; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--color-border); box-shadow: var(--shadow-sm);">
+        <img src="${data.image}" alt="${data.title}" style="width: 100%; max-height: 220px; object-fit: cover; display: block;">
+      </div>` : ''}
+
       <div class="modal-spec-block">
         <h4>Categoría &amp; Enfoque</h4>
         <p>${data.category}</p>
@@ -500,12 +508,24 @@ function initProjectModal() {
     }
   }
 
-  // Delegar clicks en botones de abrir modal
+  // Delegar clicks en botones de abrir modal y en las imágenes de los proyectos
   document.querySelectorAll('.btn-open-modal, .project-detail-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       const proj = btn.dataset.project;
       if (proj) openModal(proj);
+    });
+  });
+
+  document.querySelectorAll('.project-media-wrap').forEach(wrap => {
+    wrap.style.cursor = 'pointer';
+    wrap.title = 'Hacer clic para ver detalles y ficha técnica';
+    wrap.addEventListener('click', (e) => {
+      const card = wrap.closest('.project-card');
+      const btn = card ? card.querySelector('.btn-open-modal') : null;
+      if (btn && btn.dataset.project) {
+        openModal(btn.dataset.project);
+      }
     });
   });
 
