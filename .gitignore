@@ -1,0 +1,5 @@
+cloudflared.exe
+server.ps1
+.system_generated/
+*.log
+scratch/
