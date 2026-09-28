@@ -32,6 +32,12 @@ function initPreloader() {
 
   if (!preloader || !counterElem) return;
 
+  // Si el usuario prefiere movimiento reducido, omitir animación de inmediato (WCAG 2.2.2)
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    preloader.classList.add('preloader-hidden');
+    return;
+  }
+
   // Si el usuario ya visitó la página en la sesión actual, acelerar la animación
   const hasVisited = sessionStorage.getItem('visited_session');
   const duration = hasVisited ? 400 : 1200;
@@ -248,6 +254,7 @@ function initNavbar() {
       const isOpen = hamburgerBtn.classList.toggle('is-active');
       mobileNav.classList.toggle('open', isOpen);
       hamburgerBtn.setAttribute('aria-expanded', String(isOpen));
+      document.body.style.overflow = isOpen ? 'hidden' : '';
       if (isOpen) {
         showNavbar();
       } else {
@@ -259,6 +266,7 @@ function initNavbar() {
       hamburgerBtn.classList.remove('is-active');
       mobileNav.classList.remove('open');
       hamburgerBtn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
       scheduleHide(HIDE_DELAY_MOUSE_LEAVE);
     }
 
@@ -440,9 +448,13 @@ function initProjectModal() {
 
   if (!modal || !modalBody) return;
 
+  let lastFocusedElement = null;
+
   function openModal(projectId) {
     const data = PROJECTS_DATA[projectId];
     if (!data) return;
+
+    lastFocusedElement = document.activeElement;
 
     modalTitle.textContent = data.title;
     modalBody.innerHTML = `
@@ -498,6 +510,10 @@ function initProjectModal() {
     } else {
       modal.setAttribute('open', 'true');
     }
+
+    if (closeBtn) {
+      setTimeout(() => closeBtn.focus(), 50);
+    }
   }
 
   function closeModal() {
@@ -505,6 +521,10 @@ function initProjectModal() {
       modal.close();
     } else {
       modal.removeAttribute('open');
+    }
+
+    if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
+      lastFocusedElement.focus();
     }
   }
 
@@ -612,10 +632,16 @@ function initContactForm() {
         const errorMsg = item.validate(item.input.value);
         if (errorMsg) {
           item.group.classList.add('has-error');
-          if (item.error) item.error.textContent = errorMsg;
+          if (item.error) {
+            item.error.textContent = errorMsg;
+            if (item.error.id) item.input.setAttribute('aria-describedby', item.error.id);
+          }
+          item.input.setAttribute('aria-invalid', 'true');
         } else {
           item.group.classList.remove('has-error');
           if (item.error) item.error.textContent = '';
+          item.input.removeAttribute('aria-invalid');
+          item.input.removeAttribute('aria-describedby');
         }
       });
     });
@@ -633,10 +659,16 @@ function initContactForm() {
       if (errorMsg) {
         hasErrors = true;
         item.group.classList.add('has-error');
-        if (item.error) item.error.textContent = errorMsg;
+        if (item.error) {
+          item.error.textContent = errorMsg;
+          if (item.error.id) item.input.setAttribute('aria-describedby', item.error.id);
+        }
+        item.input.setAttribute('aria-invalid', 'true');
       } else {
         item.group.classList.remove('has-error');
         if (item.error) item.error.textContent = '';
+        item.input.removeAttribute('aria-invalid');
+        item.input.removeAttribute('aria-describedby');
       }
     });
 
@@ -855,6 +887,15 @@ function initModuleRouter() {
   document.addEventListener('click', (e) => {
     const link = e.target.closest('a[href^="#"], [data-module]');
     if (!link) return;
+
+    // Si es el enlace accesible de salto rápido, enfocar el main directamente
+    if (link.classList.contains('skip-link')) {
+      const mainContent = document.getElementById('main-content');
+      if (mainContent) {
+        mainContent.focus();
+      }
+      return;
+    }
 
     // Si es un botón del modal o acordeón, no interferir
     if (link.closest('#project-modal') || link.classList.contains('accordion-trigger')) {
