@@ -15,7 +15,6 @@ Portafolio web desarrollado con tecnologías web estándar (**HTML5 semántico**
 | **Arquitectura** | Modular por vistas independientes con enrutamiento de estado |
 | **Compatibilidad** | Google Chrome, Mozilla Firefox, Microsoft Edge, Safari |
 | **Repositorio** | [github.com/Marlonsaguino/Portafolio-.Tarea1](https://github.com/Marlonsaguino/Portafolio-.Tarea1) |
-| **Despliegue** | [marlonsaguino.github.io/portafolio-web](https://marlonsaguino.github.io/portafolio-web/) |
 
 ---
 
@@ -107,11 +106,7 @@ No requiere instalación de dependencias, entornos virtuales ni empaquetadores e
    ```
 2. Abrir el archivo `index.html` en cualquier navegador web moderno.
 
-### Acceso a la Versión Pública
-El sitio se encuentra publicado y accesible a través de GitHub Pages:  
-[https://marlonsaguino.github.io/portafolio-web/](https://marlonsaguino.github.io/portafolio-web/)
 
----
 
 ## Información de Contacto
 
